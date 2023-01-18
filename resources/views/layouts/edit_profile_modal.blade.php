@@ -97,7 +97,7 @@
                         <hr class="my-3">
 
                             <li class="media hover-media">
-                                <button class="btn btn-success">Add Post</button>
+                                <button class="btn btn-success">Edit Profile</button>
                             </li>
 
                         <hr class="my-3">

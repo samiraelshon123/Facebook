@@ -28,4 +28,5 @@ Route::middleware('auth:web')->group(function() {
     Route::resource('home', HomeController::class);
     Route::resource('profile', ProfileController::class);
     Route::post('edit_profile', [HomeController::class, 'edit_profile'])->name('edit_profile');
+    
 });

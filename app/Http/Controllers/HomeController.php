@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewNotification;
 use App\Http\Requests\CreatePostRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Models\Comment;
+use App\Models\Notification;
 use App\Models\Photo;
 use App\Models\Post;
 use App\Models\User;
@@ -28,18 +30,26 @@ class HomeController extends Controller
     // show posts with comments , photos and videos
     public function index()
     {
-        $users = User::where('address_live', auth()->user()->address_live)
-        ->orWhere('address_from', auth()->user()->address_from)
-        ->orWhere('work_place', auth()->user()->work_place)
-        ->get();
+        $users = User::with('friends')->where('id', '!=', auth()->user()->id)
+        ->where(
+            function($query){
+                return $query
+                ->where('address_live', auth()->user()->address_live)
+                ->orWhere('address_from', auth()->user()->address_from)
+                ->orWhere('work_place', auth()->user()->work_place);
+        })->get();
+
+
+        
         $user_posts = Post::with('photo')->where('user_id', auth()->user()->id)->get();
 
        $posts = Post::with('photo', 'video', 'comment')->latest()->paginate(3);
        return view('home', compact('posts', 'user_posts', 'users'));
 
     }
+    // follow friend
     public function show($id){
-       
+
         UserFriend::create([
          'user_id' => auth()->user()->id,
          'user_friend_id' => $id,
@@ -50,6 +60,9 @@ class HomeController extends Controller
     public function store(CreatePostRequest $request){
         $data = $request->Validated();
         $data['user_id'] = auth()->user()->id;
+        if($data['title'] == null){
+            $data['title'] = 'Public Post';
+        }
         $post1 = Post::create($data);
 
         $post = Post::with('photo', 'video')->find($post1->id);
@@ -90,7 +103,7 @@ class HomeController extends Controller
 
           return redirect()->route('home.index');
     }
-
+    // edit profile
     public function edit_profile(UpdateProfileRequest $request){
 
         $data = $request->Validated();
@@ -120,14 +133,40 @@ class HomeController extends Controller
     //store comment
     public function update(Request $request, $id)
     {
+
         $post = Post::find($id);
-       $comment = Comment::create([
-        'comment' => $request->comment,
-        'post_id' => $id,
-        'user_id' => auth()->user()->id
+        $comment = Comment::create([
+            'comment' => $request->comment,
+            'post_id' => $id,
+            'user_id' => auth()->user()->id
        ]);
-       $post->comment()->attach($comment);
-       return redirect()->route('home.index');
+       $post->comment()->attach($comment); // relation between post and comment
+
+       //this data is sent to pusher to show in notification
+       $data = [
+        'user_id' => $comment['user_id'],
+        'post_id' => $id,
+        'comment' => $request->comment,
+        'user_name' =>auth()->user()->name
+       ];
+
+       // this is data that sent to js file to appent to blade file
+       $dataResponse = [
+            'comment' => $request->comment,
+            'image' => $comment->user->profile_image_for_web
+       ];
+
+       //create notification when user comment on auth user post
+       Notification::create([
+        'user_id' => auth()->user()->id,
+        'data' => auth()->user()->name . ' comment on your post: '. $post->title,
+        'type' => 1,
+       ]);
+
+       event(new NewNotification($data));
+       $msg = "Added comment successfully";
+       return response()->json( $dataResponse, 200);
+       //return redirect()->route('home.index');
     }
 
 }

@@ -130,7 +130,8 @@
                         </div>
                     @endforeach
             </div>
-            <form action="{{route('home.update', $post->id)}}" method="post">
+
+            <form action="{{route('home.update', $post->id)}}" method="POST" id="submitForm">
                 @csrf
                 @method("put")
                 <div class="row">
@@ -144,14 +145,15 @@
                     </div>
 
                 </div>
-            </form><br>
+            </form>
+            <br>
             <h5>Comments</h5>
 
             {{-- comments --}}
             @foreach ($post->comment as $comment)
 
 
-            <div class="media mb-3">
+            <div  class="media mb-3">
                     <img src="{{$comment->user->profile_image_for_web}}" alt="img" width="45px" height="45px" class="rounded-circle mr-2">
                     <div class="media-body">
                             <p class="card-text text-justify"> {{$comment->comment}}</p>
@@ -161,6 +163,10 @@
 
             </div>
             @endforeach
+
+            <div class="media mb-3" id= "firstcomment">
+
+            </div>
 
         </div>
         <small>{{$post->created_at->diffForHumans()}}</small>
