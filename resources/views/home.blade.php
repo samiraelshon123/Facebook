@@ -211,18 +211,22 @@
                     <h6 class="card-title "><p class="ml-1">People you may know</p> </h6>
                     <div class="row no-gutters d-none d-lg-flex">
                         @foreach ($users as $user)
-                        <div class="col-6 p-1">
+                        @if (!in_array($user->id, $friendsId))
+                            <div class="col-6 p-1">
                                 <img src="{{$user->profile_image_for_web}}" alt="img" width="80px" height="80px" class="rounded-circle mb-4">
 
-                        </div>
-                        <div class="col-6 p-1 text-left">
+                            </div>
+                            <div class="col-6 p-1 text-left">
 
 
-                            <h6>{{$user->name}}</h6>
-                            <a href="{{route('home.show', $user->id)}}" class="btn btn-outline-info btn-sm mb-3"><i class="fas fa-user-friends"></i>Follow </a>
+                                <h6>{{$user->name}}</h6>
+                                <a href="{{route('home.show', $user->id)}}" class="btn btn-outline-info btn-sm mb-3"><i class="fas fa-user-friends"></i>Follow </a>
 
 
-                        </div>
+                            </div>
+
+                        @endif
+
                         @endforeach
 
 

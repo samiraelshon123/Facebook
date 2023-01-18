@@ -14,6 +14,7 @@ use App\Models\UserFriend;
 use App\Models\Video;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Exists;
 use Spatie\Activitylog\Models\Activity;
 class HomeController extends Controller
 {
@@ -30,6 +31,7 @@ class HomeController extends Controller
     // show posts with comments , photos and videos
     public function index()
     {
+
         $users = User::with('friends')->where('id', '!=', auth()->user()->id)
         ->where(
             function($query){
@@ -38,13 +40,19 @@ class HomeController extends Controller
                 ->orWhere('address_from', auth()->user()->address_from)
                 ->orWhere('work_place', auth()->user()->work_place);
         })->get();
+       
+        $friendsId = [];
+        foreach(auth()->user()->friends as $friend){
+            array_push($friendsId, $friend->id);
+        }
+        foreach(auth()->user()->friendsOf as $friend){
+            array_push($friendsId, $friend->id);
+        }
 
-
-        
         $user_posts = Post::with('photo')->where('user_id', auth()->user()->id)->get();
 
        $posts = Post::with('photo', 'video', 'comment')->latest()->paginate(3);
-       return view('home', compact('posts', 'user_posts', 'users'));
+       return view('home', compact('posts', 'user_posts', 'users', 'friendsId'));
 
     }
     // follow friend

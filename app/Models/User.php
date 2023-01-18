@@ -27,7 +27,7 @@ class User extends Authenticatable
         "address_from",
         "information",
         "work_place",
-        
+
     ];
 
     /**
@@ -65,9 +65,10 @@ class User extends Authenticatable
     }
     public function friends(){
         return $this->belongsToMany(User::class, 'user_friends', 'user_id', 'user_friend_id');
-       }
+    }
 
-       public function friendsOf(){
+    public function friendsOf(){
         return $this->belongsToMany(User::class, 'user_friends', 'user_friend_id', 'user_id');
-       }
+
+    }
 }
