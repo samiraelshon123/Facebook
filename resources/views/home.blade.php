@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app_website')
 
 @section('content')
 
@@ -103,10 +103,10 @@
 
 @foreach ($posts as $post)
 
-
+@if (in_array($post->user_id, $friendsId))
    <div class="card-body">
 
-    <div class="media">
+    <div class="media" id="posts">
         <img src="{{$post->user->profile_image_for_web}}" alt="img" width="55px" height="55px" class="rounded-circle mr-3">
 
         <div class="media-body">
@@ -150,9 +150,10 @@
             <h5>Comments</h5>
 
             {{-- comments --}}
+           <div id="comment-block">
             @foreach ($post->comment as $comment)
 
-
+            
             <div  class="media mb-3">
                     <img src="{{$comment->user->profile_image_for_web}}" alt="img" width="45px" height="45px" class="rounded-circle mr-2">
                     <div class="media-body">
@@ -163,10 +164,9 @@
 
             </div>
             @endforeach
+           </div>
 
-            <div class="media mb-3" id= "firstcomment">
 
-            </div>
 
         </div>
         <small>{{$post->created_at->diffForHumans()}}</small>
@@ -181,7 +181,10 @@
 
 
    </div>
-   @endforeach
+   <button class="see-more" data-page="2" data-link="localhost:8000/post?page=" data-div="#posts">See more</button> 
+@endif
+
+@endforeach
 
  </div>
 
@@ -209,7 +212,7 @@
             <div class="card-body">
 
                     <h6 class="card-title "><p class="ml-1">People you may know</p> </h6>
-                    <div class="row no-gutters d-none d-lg-flex">
+                    <div class="row no-gutters d-none d-lg-flex" id="follow">
                         @foreach ($users as $user)
                         @if (!in_array($user->id, $friendsId))
                             <div class="col-6 p-1">
@@ -218,30 +221,19 @@
                             </div>
                             <div class="col-6 p-1 text-left">
 
-
                                 <h6>{{$user->name}}</h6>
-                                <a href="{{route('home.show', $user->id)}}" class="btn btn-outline-info btn-sm mb-3"><i class="fas fa-user-friends"></i>Follow </a>
 
-
+                                <form action="{{route('follow', $user->id)}}" method="GET" class="submitFollowForm" >
+                                    @csrf
+                                    <button type="submit"><i class="fas fa-user-friends"></i>Follow</button>
+                                </form>
                             </div>
-
                         @endif
-
                         @endforeach
-
-
                     </div>
-
             </div>
-
         </div>
-
-
     </div>
-
             </div>
-
 </div>
-
-
 @endsection

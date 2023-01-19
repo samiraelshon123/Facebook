@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewFollow;
 use App\Events\NewNotification;
 use App\Http\Requests\CreatePostRequest;
 use App\Http\Requests\UpdateProfileRequest;
@@ -16,6 +17,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Exists;
 use Spatie\Activitylog\Models\Activity;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
 class HomeController extends Controller
 {
     /**
@@ -40,8 +43,8 @@ class HomeController extends Controller
                 ->orWhere('address_from', auth()->user()->address_from)
                 ->orWhere('work_place', auth()->user()->work_place);
         })->get();
-       
-        $friendsId = [];
+
+        $friendsId = [auth()->user()->id];
         foreach(auth()->user()->friends as $friend){
             array_push($friendsId, $friend->id);
         }
@@ -49,6 +52,7 @@ class HomeController extends Controller
             array_push($friendsId, $friend->id);
         }
 
+        //dd($friendsId);
         $user_posts = Post::with('photo')->where('user_id', auth()->user()->id)->get();
 
        $posts = Post::with('photo', 'video', 'comment')->latest()->paginate(3);
@@ -56,13 +60,47 @@ class HomeController extends Controller
 
     }
     // follow friend
-    public function show($id){
+    public function follow($id){
 
-        UserFriend::create([
+        $user_friend = UserFriend::create([
          'user_id' => auth()->user()->id,
          'user_friend_id' => $id,
         ]);
-        return redirect()->route('home.index');
+        Notification::create([
+            'user_id' => auth()->user()->id,
+            'data' => auth()->user()->name . ' follow you ',
+            'type' => 1,
+           ]);
+           $data = [
+            'user_id' => $user_friend['user_id'],
+            'user_name' =>auth()->user()->name,
+            'date' => date("Y-m-d", strtotime(Carbon::now())),
+            'time' => date("h:i A", strtotime(Carbon::now())),
+           ];
+           event(new NewNotification($data));
+
+           $users = User::with('friends')->where('id', '!=', auth()->user()->id)
+           ->where(
+               function($query){
+                   return $query
+                   ->where('address_live', auth()->user()->address_live)
+                   ->orWhere('address_from', auth()->user()->address_from)
+                   ->orWhere('work_place', auth()->user()->work_place);
+           })->get();
+
+           $friendsId = [auth()->user()->id];
+           foreach(auth()->user()->friends as $friend){
+               array_push($friendsId, $friend->id);
+           }
+           foreach(auth()->user()->friendsOf as $friend){
+               array_push($friendsId, $friend->id);
+           }
+           $dataResponse = [
+                'users' => $users,
+                'friendsId' => $friendsId
+            ];
+       return response()->json( $dataResponse, 200);
+       //return redirect()->route('home.index');
     }
     // store post with comments , photos and videos
     public function store(CreatePostRequest $request){
@@ -141,7 +179,6 @@ class HomeController extends Controller
     //store comment
     public function update(Request $request, $id)
     {
-
         $post = Post::find($id);
         $comment = Comment::create([
             'comment' => $request->comment,
@@ -155,7 +192,9 @@ class HomeController extends Controller
         'user_id' => $comment['user_id'],
         'post_id' => $id,
         'comment' => $request->comment,
-        'user_name' =>auth()->user()->name
+        'user_name' => auth()->user()->name,
+        'date' => date("Y-m-d", strtotime(Carbon::now())),
+        'time' => date("h:i A", strtotime(Carbon::now())),
        ];
 
        // this is data that sent to js file to appent to blade file
@@ -172,7 +211,7 @@ class HomeController extends Controller
        ]);
 
        event(new NewNotification($data));
-       $msg = "Added comment successfully";
+
        return response()->json( $dataResponse, 200);
        //return redirect()->route('home.index');
     }

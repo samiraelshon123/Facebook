@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class ProfileController extends Controller
@@ -13,7 +14,9 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        return view('profile');
+        $user_posts = Post::with('photo', 'video')->where('user_id', auth()->user()->id)->get();
+        
+        return view('profile', compact('user_posts'));
     }
 
     /**

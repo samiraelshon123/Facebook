@@ -33,17 +33,16 @@ $("#submitForm").on("submit", function(e){
         // data: form.serialize(),
         success: function(data){
 
-            const pa = document.getElementById("firstcomment");
-            pa.innerHTML +=
-            `
-            <img src=${data.image} width="45px" height="45px" class="rounded-circle mr-2">
+            const pa =`<div  class="media mb-3">
+                    <img src="${data.image}" alt="img" width="45px" height="45px" class="rounded-circle mr-2">
+                    <div class="media-body">
+                            <p class="card-text text-justify"> ${data.comment}</p>
 
-            <div class="media-body">
-                <p class="card-text text-justify">${data.comment}</p>
-            </div>
-            `;
-
-            document.body.prependChild(pa);
+                    </div>
+                    </div>`
+            var comment_block = $('#comment-block');
+            comment_block.prepend(pa);
+           
 
         },
         error: function (jqXhr, textStatus, errorMessage) { // error callback
@@ -51,10 +50,54 @@ $("#submitForm").on("submit", function(e){
         }
       });
 });
-
-
-
 </script>
+
+<script>
+    $(".submitFollowForm").on("submit", function(e){
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+
+        var form = $(this);
+        var actionUrl = form.attr('action');
+
+        $.ajax({
+            url: actionUrl,
+            method: 'GET',
+            dataType: 'json',
+            data: new FormData(this),
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data){
+
+            const pa = document.getElementById("follow");
+            $.each(data.users, function (key, val) {
+                    if (!jQuery.inArray(val.id, data.friendsId)){
+                    var url = route('follow', val.id);
+                    pa.innerHTML =
+                            `<div class="col-6 p-1">
+                                <img src="${val.profile_image_for_web}" alt="img" width="80px" height="80px" class="rounded-circle mb-4">
+                            </div>
+                            <div class="col-6 p-1 text-left">
+
+                                <h6>${val.name}</h6>
+
+                                <form action="${url}" method="GET" id="submitFollowForm">
+                                    @csrf
+                                    <button type="submit"><i class="fas fa-user-friends"></i>Follow</button>
+                                </form>
+                            </div>`;
+                    }
+            });
+            var div = document.createElement("div");
+            div.appendChild(pa);
+            document.body.appendChild(div);
+        },
+        error: function (jqXhr, textStatus, errorMessage) { // error callback
+
+        }
+    });
+    });
+    </script>
 
 <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
 <script>

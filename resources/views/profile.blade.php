@@ -1,28 +1,26 @@
-@extends('layouts.app')
+@extends('layouts.app_website')
 
 @section('content')
 
 @include('layouts.navbar')
-@include('layouts.modal')
-
-
         <!-----------------------------------Banner/img Starts-------------------->
 
 
         <div class="banner">
             <div class="banner-title d-flex flex-column justify-content-center align-items-center">
-                <img src="img/avatar-dhg.png" alt="img" class="rounded-circle" width="80px" height="80px">
-                <h3 class="text-light">Dave Gamache</h3>
-                <p class="text-light">I wish i was a little bit taller, wish i was a baller, wish i had a girl… also.</p>
+                <img src="{{asset('assets/upload/user/'.auth()->user()->profile_image)}}" alt="img" class="rounded-circle" width="80px" height="80px">
+                <h3 class="text-light">{{auth()->user()->name}}</h3>
+                <p class="text-light">{{auth()->user()->information}}</p>
 
             </div>
 
 
+
             <div class="banner-end d-flex justify-content-center align-items-end">
                 <ul class="nav text-light">
-                    <li class="nav-item nav-link active">Photos</li>
-                    <li class="nav-item nav-link">Others</li>
-                    <li class="nav-item nav-link">Anothers</li>
+                    <li class="nav-item nav-link active"><a href="#photos">Photos</a></li>
+                    <li class="nav-item nav-link"><a href="#posts">Posts</a></li>
+                    <li class="nav-item nav-link"><a href="#videos">Videos</a></li>
 
                 </ul>
 
@@ -35,92 +33,69 @@
 
         <!--------------------Image Portfolio----------------->
 
+        <div class="grid-template container my-4 " id="photos">
 
-        <div class="grid-template container my-4">
+            @foreach ($user_posts as $post)
 
-
-            <div class="item-1">
-
-
-
-           <a href="portfolio/img1.jpg" data-lightbox="id"><img src="portfolio/img1.jpg" alt="" class="img-fluid" style="width:455px; height: 255px;"></a>
-
-
-
-            </div>
-
-            <div class="item-2 ">
-                <a href="portfolio/img2.jpg"data-lightbox="id"> <img src="portfolio/img2.jpg" alt="" class="img-fluid" style="width:217px; height: 255px;"></a>
-
-                </div>
-                <div class="item-3">
-                        <a href="portfolio/img3.jpg"data-lightbox="id"> <img src="portfolio/img3.jpg" alt="" class="img-fluid" style="width:217px; height: 255px;"></a>
+                @foreach ($post->photo as $key=>$photo)
+                    <div class="item-".{{$key}}>
+                        <a href="portfolio/img1.jpg" data-lightbox="id"><img src="{{asset('assets/upload/photo/'.$photo->title)}}" alt="" class="img-fluid" style="width:455px; height: 255px;"></a>
                     </div>
-                    <div class="item-4">
-                            <a href="portfolio/img4.jpg"data-lightbox="id"> <img src="portfolio/img4.jpg" alt="" class="img-fluid" style="width:217px; height: 255px;"></a>
+                @endforeach
+
+            @endforeach
+        </div>
+<hr>
+        <div class="grid-template container my-4 " id="videos">
+            @foreach ($user_posts as $post)
+
+                @foreach ($post->video as $key=>$video)
+                    <div class="item-".{{$key}}>
+                        <a href="portfolio/img1.jpg" data-lightbox="id"><img src="{{asset('assets/upload/video/'.$video->title)}}" alt="" class="img-fluid" style="width:455px; height: 255px;"></a>
+                    </div>
+                @endforeach
+
+            @endforeach
+        </div>
+<hr>
+           <div class="row " id="posts">
+
+                    @foreach ($user_posts as $post)
+                        <div class="col-4">
+                            <div class="card-body">
+
+                            <div class="media" id="posts">
+                                <img src="{{$post->user->profile_image_for_web}}" alt="img" width="55px" height="55px" class="rounded-circle mr-3">
+
+                                <div class="media-body">
+                                    <h5>{{$post->user->name}}</h5>
+
+                                    <p class="card-text text-justify">{{$post->description}}</p>
 
 
 
-                        </div>
+                                    <div class="row no-gutters mb-3">
 
+                                            @foreach ($post->photo as $photo)
+                                                <div class="col-6 p-1 text-center">
+                                                    <img src="{{asset('assets/upload/photo/'.$photo->title)}}" alt="" class="img-fluid mb-2">
+                                                </div>
+                                            @endforeach
 
-                        <div class="item-5">
-
-                                <a href="portfolio/img5.jpg"data-lightbox="id"><img src="portfolio/img5.jpg" alt="" class="img-fluid" style="width:217px; height: 255px;"></a>
-
-
-
-                        </div>
-
-                        <div class="item-6">
-                                <a href="portfolio/img6.jpg"data-lightbox="id">   <img src="portfolio/img6.jpg" alt="" class="img-fluid" style="width:217px; height: 255px;"></a>
-
+                                            @foreach ($post->video as $video)
+                                                <div class="col-6 p-1 text-center">
+                                                    <img src="{{asset('assets/upload/video/'.$video->title)}}" alt="" class="img-fluid mb-2">
+                                                </div>
+                                            @endforeach
+                                    </div>
+                                </div>
+                                <small>{{$post->created_at->diffForHumans()}}</small>
+                            </div>
 
                             </div>
-                            <div class="item-7">
-                                    <a href="portfolio/img7.jpg"data-lightbox="id"> <img src="portfolio/img7.jpg" alt="" class="img-fluid" style="width:455px; height: 255px;"></a>
+                        </div>
+                    @endforeach
 
-                                </div>
-                                <div class="item-8">
-
-                                        <a href="portfolio/img8.jpg"data-lightbox="id">  <img src="portfolio/img8.jpg" alt="" class="img-fluid" style="width:217px; height: 255px;"></a>
-
-                                    </div>
-
-                                    <div class="item-9">
-                                            <a href="portfolio/img9.jpg"data-lightbox="id"><img src="portfolio/img9.jpg" alt="" class="img-fluid" style="width:217px; height: 255px;"></a>
-
-
-
-                                    </div>
-
-                                    <div class="item-10">
-                                            <a href="portfolio/img10.jpg"data-lightbox="id">    <img src="portfolio/img10.jpg" alt="" class="img-fluid" style="width:217px; height: 255px;"></a>
-
-
-                                        </div>
-                                        <div class="item-11">
-                                                <a href="portfolio/img11.jpg"data-lightbox="id">   <img src="portfolio/img11.jpg" alt="" class="img-fluid" style="width:455px; height: 255px;"></a>
-
-                                            </div>
-                                            <div class="item-12">
-                                                    <a href="portfolio/img12.jpg"data-lightbox="id">   <img src="portfolio/img12.jpg" alt="" class="img-fluid" style="width:217px; height: 255px;"></a>
-
-
-
-                                                </div>
-
-
-
-
-
-
-
-
-
-
-
-        </div>
-
+            </div>
 
 @endsection

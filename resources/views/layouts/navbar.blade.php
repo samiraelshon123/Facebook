@@ -11,9 +11,7 @@
             <li class="nav-item"><a href="{{route('home.index')}}" class="nav-link active">home</a></li>
             <li class="nav-item"><a href="{{route('profile.index')}}" class="nav-link">profile</a></li>
             <li class="nav-item"><a href="{{route('chatify')}}" class="nav-link">messages</a></li>
-            <li class="nav-item"><a href="notification.html" class="nav-link">docs</a></li>
-            <li class="nav-item"><a href="#" class="nav-link d-md-none">growl</a></li>
-            <li class="nav-item"><a href="#" class="nav-link d-md-none">logout</a></li>
+            
 
         </ul>
 
@@ -66,8 +64,25 @@
             </ul>
         </div>
 
-        <img src="{{auth()->user()->profile_image_for_web}}" alt="" class="rounded-circle ml-3 d-none d-md-block" width="32px" height="32px">
+        
+        <div class="nav-item dropdown">
+            <a id="navbarDropdown"  href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                <img src="{{auth()->user()->profile_image_for_web}}" alt="" class="rounded-circle ml-3 d-none d-md-block" width="32px" height="32px">
 
+            </a>
+
+            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="{{ route('logout') }}"
+                   onclick="event.preventDefault();
+                                 document.getElementById('logout-form').submit();">
+                    {{ __('Logout') }}
+                </a>
+
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                    @csrf
+                </form>
+            </div>
+        </div>
     </div>
 </nav>
 

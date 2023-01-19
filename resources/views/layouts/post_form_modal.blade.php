@@ -25,6 +25,9 @@
 
                                     <label for="" class="form-label me-5">Title</label>
                                     <input type="text" class="form-control" name="title">
+                                    @if($errors->has('title'))
+                                        <div class="text-danger">{{ $errors->first('title') }}</div>
+                                    @endif
 
                             </li>
 
@@ -34,6 +37,9 @@
 
                                     <label for="" class="form-label">Description</label>
                                     <input type="text" class="form-control" name="description">
+                                    @if($errors->has('description'))
+                                        <div class="text-danger">{{ $errors->first('description') }}</div>
+                                    @endif
 
                             </li>
 
@@ -43,6 +49,9 @@
 
                                     <label for=""class="form-label" >Select Photo</label>
                                     <input type="file" id="files" class="form-control" name="photo[]" multiple><br><br>
+                                    @if($errors->has('photo'))
+                                        <div class="text-danger">{{ $errors->first('photo') }}</div>
+                                    @endif
 
                             </li>
 
@@ -52,6 +61,9 @@
 
                                     <label for="" class="form-label">Select Video</label>
                                     <input type="file" id="files" class="form-control" name="video[]" multiple><br><br>
+                                    @if($errors->has('video'))
+                                        <div class="text-danger">{{ $errors->first('video') }}</div>
+                                    @endif
 
                             </li>
 
