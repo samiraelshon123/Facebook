@@ -16,6 +16,21 @@
 <script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
 </script>
 <script>
+    $(".see-more").click(function() {
+  $div = $($(this).data('div')); //div to append
+  $link = $(this).data('link'); //current URL
+
+  $page = $(this).data('page'); //get the next page #
+  $href = $link + $page; //complete URL
+  $.get($href, function(response) { //append data
+    $html = $(response).find("#posts").html();
+    $div.append($html);
+  });
+
+  $(this).data('page', (parseInt($page) + 1)); //update page #
+});
+</script>
+<script>
 $("#submitForm").on("submit", function(e){
     e.preventDefault(); // avoid to execute the actual submit of the form.
 
@@ -42,7 +57,7 @@ $("#submitForm").on("submit", function(e){
                     </div>`
             var comment_block = $('#comment-block');
             comment_block.prepend(pa);
-           
+
 
         },
         error: function (jqXhr, textStatus, errorMessage) { // error callback

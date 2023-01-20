@@ -11,12 +11,13 @@
             <li class="nav-item"><a href="{{route('home.index')}}" class="nav-link active">home</a></li>
             <li class="nav-item"><a href="{{route('profile.index')}}" class="nav-link">profile</a></li>
             <li class="nav-item"><a href="{{route('chatify')}}" class="nav-link">messages</a></li>
-            
+
 
         </ul>
 
         <form action="" class="form-inline ml-auto d-none d-md-block">
             <input type="text" name="search" id="search" placeholder="Search" class="form-control form-control-sm">
+            
         </form>
 
          <!-- Notifications Dropdown Menu -->
@@ -48,7 +49,7 @@
                                 <p class="notification-text font-small-3 text-muted text-right"> </p>
                                 <small style="direction: ltr;">
                                     <p class=" text-muted text-right"
-                                          style="direction: ltr;"> 
+                                          style="direction: ltr;">
                                     </p>
                                     <br>
 
@@ -64,7 +65,7 @@
             </ul>
         </div>
 
-        
+
         <div class="nav-item dropdown">
             <a id="navbarDropdown"  href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                 <img src="{{auth()->user()->profile_image_for_web}}" alt="" class="rounded-circle ml-3 d-none d-md-block" width="32px" height="32px">

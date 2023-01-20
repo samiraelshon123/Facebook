@@ -29,4 +29,5 @@ Route::middleware('auth:web')->group(function() {
     Route::resource('profile', ProfileController::class);
     Route::post('edit_profile', [HomeController::class, 'edit_profile'])->name('edit_profile');
     Route::get('follow/{id}', [HomeController::class, 'follow'])->name('follow');
+   
 });

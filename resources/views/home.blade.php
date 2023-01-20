@@ -101,6 +101,8 @@
 
                         </div>
 
+
+<div id="posts">
 @foreach ($posts as $post)
 
 @if (in_array($post->user_id, $friendsId))
@@ -153,7 +155,7 @@
            <div id="comment-block">
             @foreach ($post->comment as $comment)
 
-            
+
             <div  class="media mb-3">
                     <img src="{{$comment->user->profile_image_for_web}}" alt="img" width="45px" height="45px" class="rounded-circle mr-2">
                     <div class="media-body">
@@ -170,23 +172,16 @@
 
         </div>
         <small>{{$post->created_at->diffForHumans()}}</small>
-
-
-
     </div>
-
-
-
-
-
-
    </div>
-   <button class="see-more" data-page="2" data-link="localhost:8000/post?page=" data-div="#posts">See more</button> 
+
 @endif
 
 @endforeach
+</div>
+<button class="see-more" data-page="2" data-div="#posts">See more</button>
 
- </div>
+</div>
 
 
  </div>
