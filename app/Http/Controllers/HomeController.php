@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Exists;
 use Spatie\Activitylog\Models\Activity;
 use Carbon\Carbon;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
 class HomeController extends Controller
 {
@@ -31,10 +32,19 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
-    // show posts with comments , photos and videos
+
     public function index()
     {
 
+    }
+     // show posts with comments , photos and videos
+    public function home(Request $request)
+    {
+
+        $search_users = [] ;
+        if (request('search')) {
+            $search_users = User::where('id', '!=', auth()->user()->id)->where('name', 'like', '%' . request('search') . '%')->get();
+        }
         $users = User::with('friends')->where('id', '!=', auth()->user()->id)
         ->where(
             function($query){
@@ -52,11 +62,10 @@ class HomeController extends Controller
             array_push($friendsId, $friend->id);
         }
 
-        //dd($friendsId);
         $user_posts = Post::with('photo')->where('user_id', auth()->user()->id)->get();
 
        $posts = Post::with('photo', 'video', 'comment')->latest()->paginate(3);
-       return view('home', compact('posts', 'user_posts', 'users', 'friendsId'));
+       return view('home', compact('posts', 'user_posts', 'users', 'friendsId', 'search_users'));
 
     }
     // follow friend
@@ -72,7 +81,7 @@ class HomeController extends Controller
             'type' => 1,
            ]);
            $data = [
-            'user_id' => $user_friend['user_id'],
+            'user_id' => $user_friend['user_friend_id'],
             'user_name' =>auth()->user()->name,
             'date' => date("Y-m-d", strtotime(Carbon::now())),
             'time' => date("h:i A", strtotime(Carbon::now())),
@@ -99,8 +108,29 @@ class HomeController extends Controller
                 'users' => $users,
                 'friendsId' => $friendsId
             ];
+
        return response()->json( $dataResponse, 200);
-       //return redirect()->route('home.index');
+       //return redirect()->route('index');
+    }
+    public function follow_search($id){
+        $user_friend = UserFriend::create([
+            'user_id' => auth()->user()->id,
+            'user_friend_id' => $id,
+           ]);
+           Notification::create([
+               'user_id' => auth()->user()->id,
+               'data' => auth()->user()->name . ' follow you ',
+               'type' => 1,
+              ]);
+              $data = [
+               'user_id' => $user_friend['user_id'],
+               'user_name' =>auth()->user()->name,
+               'date' => date("Y-m-d", strtotime(Carbon::now())),
+               'time' => date("h:i A", strtotime(Carbon::now())),
+              ];
+              event(new NewNotification($data));
+
+          return response()->json( 'success', 200);
     }
     // store post with comments , photos and videos
     public function store(CreatePostRequest $request){
@@ -147,7 +177,7 @@ class HomeController extends Controller
 
        $post->video()->attach($videos);
 
-          return redirect()->route('home.index');
+          return redirect()->route('index');
     }
     // edit profile
     public function edit_profile(UpdateProfileRequest $request){
@@ -173,7 +203,7 @@ class HomeController extends Controller
         $user = User::find(auth()->user()->id);
 
         $user->update($data);
-        return redirect()->route('home.index');
+        return redirect()->route('index');
 
     }
     //store comment
@@ -213,7 +243,7 @@ class HomeController extends Controller
        event(new NewNotification($data));
 
        return response()->json( $dataResponse, 200);
-       //return redirect()->route('home.index');
+       //return redirect()->route('index');
     }
 
 }

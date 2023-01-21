@@ -128,7 +128,11 @@
 
                     @foreach ($post->video as $video)
                         <div class="col-6 p-1 text-center">
-                            <img src="{{asset('assets/upload/video/'.$video->title)}}" alt="" class="img-fluid mb-2">
+
+                            <video width="250" height="200" controls>
+                                <source src="{{asset('assets/upload/video/'.$video->title)}}" type="video/mp4" >
+
+                              </video>
                         </div>
                     @endforeach
             </div>
@@ -179,7 +183,10 @@
 
 @endforeach
 </div>
+@if (count($posts) > 3)
+
 <button class="see-more" data-page="2" data-div="#posts">See more</button>
+@endif
 
 </div>
 
@@ -202,13 +209,16 @@
     <div class="right-column">
 
 
+
+        @if (count($search_users) > 0)
+
         <div class="card shadow-sm mb-4">
 
             <div class="card-body">
 
-                    <h6 class="card-title "><p class="ml-1">People you may know</p> </h6>
-                    <div class="row no-gutters d-none d-lg-flex" id="follow">
-                        @foreach ($users as $user)
+                    <h6 class="card-title "><p class="ml-1">People you search about</p> </h6>
+                    <div class="row no-gutters d-none d-lg-flex" id="follow_search">
+                        @foreach ($search_users as $user)
                         @if (!in_array($user->id, $friendsId))
                             <div class="col-6 p-1">
                                 <img src="{{$user->profile_image_for_web}}" alt="img" width="80px" height="80px" class="rounded-circle mb-4">
@@ -218,7 +228,7 @@
 
                                 <h6>{{$user->name}}</h6>
 
-                                <form action="{{route('follow', $user->id)}}" method="GET" class="submitFollowForm" >
+                                <form action="{{route('follow', $user->id)}}" method="GET" class="submitSearchForm" >
                                     @csrf
                                     <button type="submit"><i class="fas fa-user-friends"></i>Follow</button>
                                 </form>
@@ -227,7 +237,51 @@
                         @endforeach
                     </div>
             </div>
+
         </div>
+        @else
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-body">
+
+                    <h6 class="card-title "><p class="ml-1">People you search about</p> </h6>
+                    <div class="row no-gutters d-none d-lg-flex">
+                       <h6>No Users Found</h6>
+                    </div>
+            </div>
+
+        </div>
+        @endif
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-body">
+
+                    <h6 class="card-title "><p class="ml-1">People you may know</p> </h6>
+                    <div id="contain">
+                        <div class="row no-gutters d-none d-lg-flex" id="follow">
+                            @foreach ($users as $user)
+                            @if (!in_array($user->id, $friendsId))
+                                <div class="col-6 p-1">
+                                    <img src="{{$user->profile_image_for_web}}" alt="img" width="80px" height="80px" class="rounded-circle mb-4">
+
+                                </div>
+                                <div class="col-6 p-1 text-left">
+
+                                    <h6>{{$user->name}}</h6>
+
+                                    <form action="{{route('follow', $user->id)}}" method="GET" class="submitFollowForm" >
+                                        @csrf
+                                        <button type="submit"><i class="fas fa-user-friends"></i>Follow</button>
+                                    </form>
+                                </div>
+                            @endif
+                            @endforeach
+                        </div>
+                    </div>
+            </div>
+
+        </div>
+
     </div>
             </div>
 </div>

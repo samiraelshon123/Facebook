@@ -8,16 +8,17 @@
 
     <div class="collapse navbar-collapse" id="responsive">
         <ul class="navbar-nav mr-auto text-capitalize">
-            <li class="nav-item"><a href="{{route('home.index')}}" class="nav-link active">home</a></li>
+            <li class="nav-item"><a href="{{route('index')}}" class="nav-link active">home</a></li>
             <li class="nav-item"><a href="{{route('profile.index')}}" class="nav-link">profile</a></li>
             <li class="nav-item"><a href="{{route('chatify')}}" class="nav-link">messages</a></li>
 
 
         </ul>
 
-        <form action="" class="form-inline ml-auto d-none d-md-block">
+        <form action="{{route('index')}}" class="form-inline ml-auto d-none d-md-block" method="GET">
+            @csrf
             <input type="text" name="search" id="search" placeholder="Search" class="form-control form-control-sm">
-            
+
         </form>
 
          <!-- Notifications Dropdown Menu -->

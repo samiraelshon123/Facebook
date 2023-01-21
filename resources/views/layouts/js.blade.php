@@ -1,18 +1,7 @@
-{{-- <script>
-    lightbox.option({
-
-    })
-</script> --}}
-
-
-
-<!------------------------Light BOx OPtions------------->
-
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="{{asset('assets/js/lightbox-plus-jquery.min.js')}}"></script>
 <script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
 </script>
 <script>
@@ -30,6 +19,7 @@
   $(this).data('page', (parseInt($page) + 1)); //update page #
 });
 </script>
+{{-- write comment --}}
 <script>
 $("#submitForm").on("submit", function(e){
     e.preventDefault(); // avoid to execute the actual submit of the form.
@@ -66,14 +56,12 @@ $("#submitForm").on("submit", function(e){
       });
 });
 </script>
-
+{{-- people you know --}}
 <script>
     $(".submitFollowForm").on("submit", function(e){
         e.preventDefault(); // avoid to execute the actual submit of the form.
-
         var form = $(this);
         var actionUrl = form.attr('action');
-
         $.ajax({
             url: actionUrl,
             method: 'GET',
@@ -83,36 +71,60 @@ $("#submitForm").on("submit", function(e){
             contentType: false,
             processData: false,
             success: function(data){
+            $('#follow').empty();
+            var follow_block =  $('#follow');
 
-            const pa = document.getElementById("follow");
             $.each(data.users, function (key, val) {
-                    if (!jQuery.inArray(val.id, data.friendsId)){
-                    var url = route('follow', val.id);
-                    pa.innerHTML =
+
+                    if ((jQuery.inArray(val.id, data.friendsId)) == -1){
+
+                    var url = "route('follow', val.id)";
+                    const pa =
                             `<div class="col-6 p-1">
                                 <img src="${val.profile_image_for_web}" alt="img" width="80px" height="80px" class="rounded-circle mb-4">
                             </div>
                             <div class="col-6 p-1 text-left">
-
                                 <h6>${val.name}</h6>
-
-                                <form action="${url}" method="GET" id="submitFollowForm">
+                                <form action=${url} method="GET" id="submitFollowForm">
                                     @csrf
                                     <button type="submit"><i class="fas fa-user-friends"></i>Follow</button>
                                 </form>
                             </div>`;
+                    follow_block.prepend(pa);
                     }
             });
-            var div = document.createElement("div");
-            div.appendChild(pa);
-            document.body.appendChild(div);
         },
         error: function (jqXhr, textStatus, errorMessage) { // error callback
-
         }
     });
     });
     </script>
+{{-- people you search about --}}
+
+<script>
+    $(".submitSearchForm").on("submit", function(e){
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+        var form = $(this);
+        var actionUrl = form.attr('action');
+        $.ajax({
+            url: actionUrl,
+            method: 'GET',
+            dataType: 'json',
+            data: new FormData(this),
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data){
+            $('#follow_search').empty();
+
+        },
+        error: function (jqXhr, textStatus, errorMessage) { // error callback
+        }
+    });
+    });
+    </script>
+
+
 
 <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
 <script>

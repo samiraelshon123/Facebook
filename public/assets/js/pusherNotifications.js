@@ -11,27 +11,38 @@ var channel = pusher.subscribe('new-notification');
     var auth_id = $('#auth_id').val();
 
     if(data.data.user_id !== parseInt(auth_id)){
-    var existingNotifications = notifications.html();
-    if((data.data.comment == undefined)){
-        var newNotificationHtml =
-        `<div class="media-body"><h6 class="media-heading text-right">${data.data.user_name} follow you</h6>
+        var existingNotifications = notifications.html();
+        if((data.data.comment == undefined)){
+            if(data.data.user_id == parseInt(auth_id)){
+                var newNotificationHtml =
+                `<div class="media-body"><h6 class="media-heading text-right">${data.data.user_name} follow you</h6>
 
-        <small style="direction: ltr;"><p class="media-meta text-muted text-right" style="direction: ltr;">
-        ${data.data.date} ${data.data.time} </p> </small></div><hr>`;
+                <small style="direction: ltr;"><p class="media-meta text-muted text-right" style="direction: ltr;">
+                ${data.data.date} ${data.data.time} </p> </small></div><hr>`;
+                notifications.html(newNotificationHtml + existingNotifications);
+                notificationsCount += 1;
+                notificationsCountElem.attr('data-count', notificationsCount);
+                notificationsWrapper.find('.notif-count').text(notificationsCount);
+                notificationsWrapper.show();
+            }
 
-    }else{
-        var newNotificationHtml =
+        }else{
+            if(parseInt(auth_id) == data.data.post_id){
 
-            `<div class="media-body"><h6 class="media-heading text-right">${data.data.user_name} comment on your post</h6>
+                var newNotificationHtml =
 
-            <small style="direction: ltr;"><p class="media-meta text-muted text-right" style="direction: ltr;">
-            ${data.data.date} ${data.data.time} </p> </small></div><hr>`;
+                    `<div class="media-body"><h6 class="media-heading text-right">${data.data.user_name} comment on your post</h6>
+
+                    <small style="direction: ltr;"><p class="media-meta text-muted text-right" style="direction: ltr;">
+                    ${data.data.date} ${data.data.time} </p> </small></div><hr>`;
+                    notifications.html(newNotificationHtml + existingNotifications);
+                    notificationsCount += 1;
+                    notificationsCountElem.attr('data-count', notificationsCount);
+                    notificationsWrapper.find('.notif-count').text(notificationsCount);
+                    notificationsWrapper.show();
+            }
+        }
+
+
     }
-        notifications.html(newNotificationHtml + existingNotifications);
-        notificationsCount += 1;
-        notificationsCountElem.attr('data-count', notificationsCount);
-        notificationsWrapper.find('.notif-count').text(notificationsCount);
-        notificationsWrapper.show();
-
-}
 });

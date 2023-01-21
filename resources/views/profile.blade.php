@@ -51,7 +51,12 @@
 
                 @foreach ($post->video as $key=>$video)
                     <div class="item-".{{$key}}>
-                        <a href="portfolio/img1.jpg" data-lightbox="id"><img src="{{asset('assets/upload/video/'.$video->title)}}" alt="" class="img-fluid" style="width:455px; height: 255px;"></a>
+                        <a href="portfolio/img1.jpg" data-lightbox="id">
+                            <video width="250" height="200" controls>
+                                <source src="{{asset('assets/upload/video/'.$video->title)}}" type="video/mp4" >
+
+                              </video>
+                        </a>
                     </div>
                 @endforeach
 
@@ -84,7 +89,10 @@
 
                                             @foreach ($post->video as $video)
                                                 <div class="col-6 p-1 text-center">
-                                                    <img src="{{asset('assets/upload/video/'.$video->title)}}" alt="" class="img-fluid mb-2">
+                                                    <video width="250" height="200" controls>
+                                                        <source src="{{asset('assets/upload/video/'.$video->title)}}" type="video/mp4" >
+
+                                                      </video>
                                                 </div>
                                             @endforeach
                                     </div>
