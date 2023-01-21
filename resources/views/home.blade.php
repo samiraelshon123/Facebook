@@ -85,7 +85,8 @@
 
                                 @csrf
                                 <div class="input-group w-100">
-                                 <input type="text" name="description" id="description" placeholder="Write Post" class="form-control form-control-md">
+                                   
+                                    <input type="text" name="description" id="description" placeholder="Write Post" class="form-control form-control-md">
 
                                  <div class="input-group-append">
                                         <div class="input-group-text">

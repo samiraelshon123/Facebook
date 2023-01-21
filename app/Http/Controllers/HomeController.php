@@ -136,9 +136,7 @@ class HomeController extends Controller
     public function store(CreatePostRequest $request){
         $data = $request->Validated();
         $data['user_id'] = auth()->user()->id;
-        if($data['title'] == null){
-            $data['title'] = 'Public Post';
-        }
+        
         $post1 = Post::create($data);
 
         $post = Post::with('photo', 'video')->find($post1->id);
