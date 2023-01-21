@@ -1,4 +1,4 @@
-<title>{{ config('chatify.name') }}</title>
+<title>{{ config('app.name', 'Laravel') }}</title>
 
 {{-- Meta tags --}}
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,7 +10,7 @@
 
 {{-- scripts --}}
 <script
-  src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  src="{{ asset('assets/js/jquery.js')}}"></script>
 <script src="{{ asset('js/chatify/font.awesome.min.js') }}"></script>
 <script src="{{ asset('js/chatify/autosize.js') }}"></script>
 
